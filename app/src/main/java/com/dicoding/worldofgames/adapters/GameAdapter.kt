@@ -10,7 +10,7 @@ import com.dicoding.worldofgames.R
 import com.dicoding.worldofgames.models.GameModel
 import com.squareup.picasso.Picasso
 
-class GameAdapter(private val dataList: List<GameModel>) :
+class GameAdapter(private val dataList: List<GameModel>, private val onItemClick: (GameModel) -> Unit) :
     RecyclerView.Adapter<GameAdapter.ExampleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExampleViewHolder {
@@ -27,6 +27,10 @@ class GameAdapter(private val dataList: List<GameModel>) :
         Picasso.get().load(currentItem.thumbnail).into(holder.image)
         holder.tvName.text = currentItem.title
         holder.tvPublisher.text = currentItem.publisher
+
+        holder.itemView.setOnClickListener {
+            onItemClick.invoke(currentItem)
+        }
     }
 
     override fun getItemCount() = dataList.size

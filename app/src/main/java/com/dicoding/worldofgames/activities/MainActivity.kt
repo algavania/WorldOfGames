@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkIfFragmentExist(fragment: Fragment): Boolean {
         val actualFragment = supportFragmentManager.findFragmentByTag(fragment.javaClass.simpleName)
-        Log.d("check fragment", "${actualFragment != null}")
         return actualFragment != null
     }
 
@@ -66,7 +65,6 @@ class MainActivity : AppCompatActivity() {
     private fun hideFragment(fragment: Fragment) {
         if (checkIfFragmentExist(fragment)) {
             supportFragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).hide(fragment).commit()
-            Log.d("hide fragment", "yes ${fragment.javaClass.simpleName}")
         }
     }
 }

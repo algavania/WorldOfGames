@@ -1,5 +1,6 @@
 package com.dicoding.worldofgames.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +14,8 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.dicoding.worldofgames.R
+import com.dicoding.worldofgames.activities.DetailActivity
+import com.dicoding.worldofgames.activities.LandingActivity
 import com.dicoding.worldofgames.adapters.GameAdapter
 import com.dicoding.worldofgames.models.GameModel
 import org.json.JSONObject
@@ -103,7 +106,12 @@ class HomeFragment : Fragment() {
                         }
                     }
 
-                    recyclerView?.adapter = GameAdapter(list)
+                    val adapter = GameAdapter(list, onItemClick = {
+                        val intent = Intent(activity, DetailActivity::class.java)
+                        intent.putExtra("game", it)
+                        startActivity(intent)
+                    })
+                    recyclerView?.adapter = adapter
                     recyclerView?.layoutManager = LinearLayoutManager(activity)
                     recyclerView?.setItemViewCacheSize(20)
                     recyclerView?.isDrawingCacheEnabled = true

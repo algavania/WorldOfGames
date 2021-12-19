@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WorldOfGames">
+        <activity android:name=".activities.DetailActivity"></activity>
         <activity android:name=".activities.LandingActivity" />
         <activity android:name=".activities.SplashActivity">
             <intent-filter>
