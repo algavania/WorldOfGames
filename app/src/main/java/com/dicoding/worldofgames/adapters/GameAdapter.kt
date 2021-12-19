@@ -11,17 +11,17 @@ import com.dicoding.worldofgames.models.GameModel
 import com.squareup.picasso.Picasso
 
 class GameAdapter(private val dataList: List<GameModel>, private val onItemClick: (GameModel) -> Unit) :
-    RecyclerView.Adapter<GameAdapter.ExampleViewHolder>() {
+    RecyclerView.Adapter<GameAdapter.GameAdapterViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExampleViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameAdapterViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.game_item,
             parent, false)
 
-        return ExampleViewHolder(itemView)
+        return GameAdapterViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: ExampleViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: GameAdapterViewHolder, position: Int) {
         val currentItem = dataList[position]
 
         Picasso.get().load(currentItem.thumbnail).into(holder.image)
@@ -35,7 +35,7 @@ class GameAdapter(private val dataList: List<GameModel>, private val onItemClick
 
     override fun getItemCount() = dataList.size
 
-    class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class GameAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val image: ImageView = itemView.findViewById(R.id.img_game_item)
         val tvName: TextView = itemView.findViewById(R.id.tv_name_item)
         val tvPublisher: TextView = itemView.findViewById(R.id.tv_publisher_item)

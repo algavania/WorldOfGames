@@ -114,8 +114,6 @@ class HomeFragment : Fragment() {
                     recyclerView?.adapter = adapter
                     recyclerView?.layoutManager = LinearLayoutManager(activity)
                     recyclerView?.setItemViewCacheSize(20)
-                    recyclerView?.isDrawingCacheEnabled = true
-                    recyclerView?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
                     recyclerView?.setHasFixedSize(true)
                     progressBar?.visibility = View.GONE
                 }
