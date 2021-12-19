@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    tools:context=".LandingActivity">
+    tools:context=".activities.LandingActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,7 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.4"
-        android:background="@drawable/layout_bg"
         android:padding="@dimen/_20sdp">
 
         <TextView
