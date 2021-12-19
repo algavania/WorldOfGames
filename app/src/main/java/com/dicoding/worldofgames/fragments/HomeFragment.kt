@@ -10,12 +10,12 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.dicoding.worldofgames.R
 import com.dicoding.worldofgames.activities.DetailActivity
-import com.dicoding.worldofgames.activities.LandingActivity
 import com.dicoding.worldofgames.adapters.GameAdapter
 import com.dicoding.worldofgames.models.GameModel
 import org.json.JSONObject
@@ -34,15 +34,16 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var recyclerView: RecyclerView? = null
+    private lateinit var recyclerView: RecyclerView
     private val list = ArrayList<GameModel>()
-    private var progressBar: ProgressBar? = null
+    private lateinit var progressBar: ProgressBar
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        arguments.let {
+            param1 = it?.getString(ARG_PARAM1)
+            param2 = it?.getString(ARG_PARAM2)
         }
     }
 
@@ -78,11 +79,21 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.rv_home)
         progressBar = view.findViewById(R.id.progress_home)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_home)
+        swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.purple_500))
+
+        swipeRefreshLayout.setOnRefreshListener {
+            val runnable = Runnable {
+                fetchGames()
+            }
+            runnable.run()
+        }
+
         fetchGames()
     }
 
     private fun fetchGames() {
-        progressBar?.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
         list.clear()
         AndroidNetworking.get("https://api.jsonbin.io/b/613c446b9548541c29afe943")
             .build()
@@ -101,7 +112,17 @@ class HomeFragment : Fragment() {
                             val developer = jsonObject.getString("developer")
                             val releaseDate = jsonObject.getString("release_date")
                             val description = jsonObject.getString("short_description")
-                            val gameModel = GameModel(title, genre, platform, releaseDate, publisher, developer, description, thumbnail, url)
+                            val gameModel = GameModel(
+                                title,
+                                genre,
+                                platform,
+                                releaseDate,
+                                publisher,
+                                developer,
+                                description,
+                                thumbnail,
+                                url
+                            )
                             list.add(gameModel)
                         }
                     }
@@ -111,18 +132,21 @@ class HomeFragment : Fragment() {
                         intent.putExtra("game", it)
                         startActivity(intent)
                     })
-                    recyclerView?.adapter = adapter
-                    recyclerView?.layoutManager = LinearLayoutManager(activity)
-                    recyclerView?.setItemViewCacheSize(20)
-                    recyclerView?.setHasFixedSize(true)
-                    progressBar?.visibility = View.GONE
+                    recyclerView.adapter = adapter
+                    recyclerView.layoutManager = LinearLayoutManager(activity)
+                    recyclerView.setItemViewCacheSize(20)
+                    recyclerView.setHasFixedSize(true)
+                    progressBar.visibility = View.GONE
+                    swipeRefreshLayout.isRefreshing = false
                 }
 
                 override fun onError(anError: ANError?) {
                     Toast.makeText(activity, anError?.message, Toast.LENGTH_SHORT).show()
-                    progressBar?.visibility = View.GONE
+                    progressBar.visibility = View.GONE
+                    swipeRefreshLayout.isRefreshing = false
                 }
 
             })
     }
+
 }

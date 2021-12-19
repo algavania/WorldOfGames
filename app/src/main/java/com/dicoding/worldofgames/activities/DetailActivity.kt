@@ -36,7 +36,8 @@ class DetailActivity : AppCompatActivity() {
         val realm = Realm.getInstance(configuration)
         realmHelper = RealmHelper(realm)
 
-        gameModel = intent.extras?.getSerializable("game") as GameModel
+        gameModel = intent.extras?.getParcelable("game")!!
+        supportActionBar?.title = gameModel.title
 
         isFavorite = realmHelper.checkIfFavorite(gameModel)
 
