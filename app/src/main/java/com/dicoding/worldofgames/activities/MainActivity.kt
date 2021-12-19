@@ -26,7 +26,8 @@ class MainActivity : AppCompatActivity() {
         showFragment(homeFragment)
 
         bottomBar.setOnItemSelectedListener {
-            when(it) {
+            Log.d("item", it.toString())
+            when (it) {
                 0 -> {
                     showFragment(homeFragment)
                     hideFragment(favoriteFragment)
@@ -42,25 +43,30 @@ class MainActivity : AppCompatActivity() {
                     hideFragment(homeFragment)
                     hideFragment(favoriteFragment)
                 }
-            }        }
+            }
+        }
     }
 
     private fun checkIfFragmentExist(fragment: Fragment): Boolean {
         val actualFragment = supportFragmentManager.findFragmentByTag(fragment.javaClass.simpleName)
+        Log.d("check fragment", "${actualFragment != null}")
         return actualFragment != null
     }
 
     private fun showFragment(fragment: Fragment) {
         if (checkIfFragmentExist(fragment)) {
-            supportFragmentManager.beginTransaction().show(fragment).commit()
+            supportFragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).show(fragment).commit()
         } else {
-            supportFragmentManager.beginTransaction().add(R.id.fragment_container, fragment, fragment.javaClass.simpleName).show(fragment).commit()
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).add(R.id.fragment_container, fragment, fragment.javaClass.simpleName)
+                .show(fragment).commit()
         }
     }
 
     private fun hideFragment(fragment: Fragment) {
         if (checkIfFragmentExist(fragment)) {
-            supportFragmentManager.beginTransaction().hide(fragment).commit()
+            supportFragmentManager.beginTransaction().setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).hide(fragment).commit()
+            Log.d("hide fragment", "yes ${fragment.javaClass.simpleName}")
         }
     }
 }

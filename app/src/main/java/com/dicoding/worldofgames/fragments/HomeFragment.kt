@@ -5,7 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.androidnetworking.AndroidNetworking
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.JSONObjectRequestListener
 import com.dicoding.worldofgames.R
+import com.dicoding.worldofgames.adapters.GameAdapter
+import com.dicoding.worldofgames.models.GameModel
+import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +31,9 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var recyclerView: RecyclerView? = null
+    private val list = ArrayList<GameModel>()
+    private var progressBar: ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +73,50 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.rv_home)
+        progressBar = view.findViewById(R.id.progress_home)
+        fetchGames()
+    }
 
+    private fun fetchGames() {
+        progressBar?.visibility = View.VISIBLE
+        list.clear()
+        AndroidNetworking.get("https://api.jsonbin.io/b/613c446b9548541c29afe943")
+            .build()
+            .getAsJSONObject(object : JSONObjectRequestListener {
+                override fun onResponse(response: JSONObject?) {
+                    val jsonArray = response?.getJSONArray("games")
+                    if (jsonArray != null) {
+                        for (i in 0 until jsonArray.length()) {
+                            val jsonObject = jsonArray.getJSONObject(i)
+                            val title = jsonObject.getString("title")
+                            val thumbnail = jsonObject.getString("thumbnail")
+                            val url = jsonObject.getString("game_url")
+                            val genre = jsonObject.getString("genre")
+                            val platform = jsonObject.getString("platform")
+                            val publisher = jsonObject.getString("publisher")
+                            val developer = jsonObject.getString("developer")
+                            val releaseDate = jsonObject.getString("release_date")
+                            val description = jsonObject.getString("short_description")
+                            val gameModel = GameModel(title, genre, platform, releaseDate, publisher, developer, description, thumbnail, url)
+                            list.add(gameModel)
+                        }
+                    }
+
+                    recyclerView?.adapter = GameAdapter(list)
+                    recyclerView?.layoutManager = LinearLayoutManager(activity)
+                    recyclerView?.setItemViewCacheSize(20)
+                    recyclerView?.isDrawingCacheEnabled = true
+                    recyclerView?.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
+                    recyclerView?.setHasFixedSize(true)
+                    progressBar?.visibility = View.GONE
+                }
+
+                override fun onError(anError: ANError?) {
+                    Toast.makeText(activity, anError?.message, Toast.LENGTH_SHORT).show()
+                    progressBar?.visibility = View.GONE
+                }
+
+            })
     }
 }
